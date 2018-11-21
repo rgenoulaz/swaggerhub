@@ -1,9 +1,9 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "title" : "Goods Codification API test",
+    "title" : "Goods Codification API test V1.0.1",
     "description" : "CMA CGM - Referential Goods Codification Service",
-    "version" : "1.0.0"
+    "version" : "1.0.1"
   },
   "schemes" : [ "https" ],
   "securityDefinitions" : {
@@ -40,7 +40,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Successful operation",
+            "description" : "Successful operationn ggg",
             "schema" : {
               "$ref" : "#/definitions/Commodity"
             }
@@ -62,7 +62,7 @@
     },
     "/commodities" : {
       "get" : {
-        "tags" : [ "Commodity" ],
+        "tags" : [ "Commodity test" ],
         "security" : [ {
           "oAuth" : [ "commodity:be" ]
         } ],
