@@ -1,0 +1,219 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "title" : "Goods Codification API test",
+    "description" : "CMA CGM - Referential Goods Codification Service",
+    "version" : "1.0.0"
+  },
+  "schemes" : [ "https" ],
+  "securityDefinitions" : {
+    "oAuth" : {
+      "type" : "oauth2",
+      "flow" : "application",
+      "tokenUrl" : "https://auth-int.cma-cgm.com:9031/as/token.oauth2",
+      "scopes" : {
+        "commodity:be" : "read access"
+      }
+    }
+  },
+  "tags" : [ {
+    "name" : "Commodity",
+    "description" : "Commodity overview"
+  } ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/commodities/{commodityCode}" : {
+      "get" : {
+        "tags" : [ "Commodity" ],
+        "security" : [ {
+          "oAuth" : [ "commodity:be" ]
+        } ],
+        "summary" : "Load commodity",
+        "description" : "<p>This method loads a commodity by its code",
+        "operationId" : "loadCommodity",
+        "parameters" : [ {
+          "name" : "commodityCode",
+          "in" : "path",
+          "required" : true,
+          "description" : "Commodity code",
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Commodity"
+            }
+          },
+          "404" : {
+            "description" : "hereunder fault datatype description <br> Reason - 404 Not Found <br> Code - CDT_ERR Description - Unknown commodity",
+            "schema" : {
+              "$ref" : "#/definitions/Fault"
+            }
+          },
+          "500" : {
+            "description" : "hereunder fault datatype description <br> Reason - 500 Internal Error <br> Code - CDT_ERR Description - Commodity service unavailable",
+            "schema" : {
+              "$ref" : "#/definitions/Fault"
+            }
+          }
+        }
+      }
+    },
+    "/commodities" : {
+      "get" : {
+        "tags" : [ "Commodity" ],
+        "security" : [ {
+          "oAuth" : [ "commodity:be" ]
+        } ],
+        "summary" : "Search commodities",
+        "description" : "<p>This method search for commodities",
+        "operationId" : "listCommodities",
+        "parameters" : [ {
+          "name" : "codeStarts",
+          "in" : "query",
+          "description" : "At least two characters the commodity code starts with",
+          "type" : "string",
+          "minLength" : 2
+        }, {
+          "name" : "codeContains",
+          "in" : "query",
+          "description" : "At least two characters the commodity code contains",
+          "type" : "string",
+          "minLength" : 2
+        }, {
+          "name" : "descriptionContains",
+          "in" : "query",
+          "description" : "At least three characters the commodity description contains",
+          "type" : "string",
+          "minLength" : 3
+        }, {
+          "name" : "group",
+          "in" : "query",
+          "description" : "The group the commodity is within",
+          "type" : "string"
+        }, {
+          "name" : "valid",
+          "in" : "query",
+          "description" : "The commodity validity",
+          "type" : "boolean",
+          "allowEmptyValue" : true
+        }, {
+          "name" : "range",
+          "in" : "header",
+          "type" : "string",
+          "default" : "0-49",
+          "required" : false,
+          "description" : "Pagination parameter. <br>Default 0-49: Maximum rows to return 50"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "returns commodities",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Commodity"
+              }
+            }
+          },
+          "206" : {
+            "description" : "Successful but partial content",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Commodity"
+              }
+            }
+          },
+          "400" : {
+            "description" : "hereunder fault datatype description <br> Reason - 400 Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/Fault"
+            }
+          },
+          "416" : {
+            "description" : "hereunder fault datatype description <br> Reason - 416 Range Not Satisfiable <br> Code - CDT_ERR Description - No commodity found for range",
+            "schema" : {
+              "$ref" : "#/definitions/Fault"
+            }
+          },
+          "500" : {
+            "description" : "hereunder fault datatype description <br> Reason - 500 Internal Error <br> Code - CDT_ERR Description - Commodity service unavailable",
+            "schema" : {
+              "$ref" : "#/definitions/Fault"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Fault" : {
+      "type" : "object",
+      "properties" : {
+        "details" : {
+          "description" : "Detail of the fault",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/FaultDetail"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "Fault"
+      }
+    },
+    "FaultDetail" : {
+      "type" : "object",
+      "properties" : {
+        "reason" : {
+          "type" : "string",
+          "description" : "HTTP error or Free text such as  Database Not Available, Invalid Credential, Mandatory, Invalid Format, Invalid Length, ForbiddenValue, Invalid Data,..."
+        },
+        "code" : {
+          "type" : "string",
+          "description" : "Error Id,  Server Application error ID, Oracle error Id, ...."
+        },
+        "description" : {
+          "type" : "string",
+          "description" : "Human-readable error description including Data and Value"
+        }
+      },
+      "required" : [ "reason" ],
+      "xml" : {
+        "name" : "FaultDetail"
+      }
+    },
+    "Commodity" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "description" : "Commodity code"
+        },
+        "description" : {
+          "type" : "string",
+          "description" : "Commodity long description"
+        },
+        "group" : {
+          "type" : "string",
+          "description" : "Commodity group code"
+        },
+        "potentialHazardous" : {
+          "type" : "boolean",
+          "description" : "Commodity may be related to hazardous goods"
+        },
+        "valid" : {
+          "type" : "boolean",
+          "description" : "Commodity validity<br><i>Invalid commodities shall not be used but are displayed for backward compatibility</i>"
+        }
+      },
+      "required" : [ "code" ],
+      "xml" : {
+        "name" : "Commodity"
+      }
+    }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/rgenoulaz/CommodityTest/1.0.0"
+}
