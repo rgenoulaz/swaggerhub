@@ -1,7 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "title" : "Goods Codification API test ZZZZZZZZZZZZZZZZZZ",
+    "title" : "Goods Codification API test DEV BRANCH",
     "description" : "CMA CGM - Referential Goods Codification Service",
     "version" : "1.0.0"
   },
